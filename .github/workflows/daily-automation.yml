@@ -1,0 +1,17 @@
+name: Daily automation
+
+on:
+  schedule:
+    # 01:30 UTC = 07:00 IST — adjust to whenever you want the day's brief posted
+    - cron: "30 1 * * *"
+  workflow_dispatch: {} # lets you click "Run workflow" manually in the GitHub Actions tab
+
+jobs:
+  run-daily:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the daily automation endpoint
+        run: |
+          curl -sf -X GET "${{ secrets.SITE_URL }}/api/cron/daily" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -w "\nHTTP status: %{http_code}\n"
